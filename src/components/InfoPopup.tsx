@@ -51,7 +51,7 @@ export const InfoPopup: React.FC<InfoPopupProps> = ({ isOpen, onClose }) => {
                 {/* Central Florida Foundation logo */}
                 <div className="text-center">
                   <img
-                    src="/logo_cff.png"
+                    src={`${import.meta.env.BASE_URL}logo_cff.png`}
                     alt="Central Florida Foundation"
                     className="w-20 h-20 object-contain mb-2 mx-auto"
                     onClick={() => window.open('https://cffound.org/', '_blank')}
@@ -61,7 +61,7 @@ export const InfoPopup: React.FC<InfoPopupProps> = ({ isOpen, onClose }) => {
                 {/* Florida Community Innovation logo */}
                 <div className="text-center">
                   <img
-                    src="/logo_fci.svg"
+                    src={`${import.meta.env.BASE_URL}logo_fci.svg`}
                     alt="Florida Community Innovation"
                     className="w-20 h-20 object-contain mb-2 mx-auto"
                     onClick={() => window.open('https://floridainnovation.org/', '_blank')}
@@ -71,7 +71,7 @@ export const InfoPopup: React.FC<InfoPopupProps> = ({ isOpen, onClose }) => {
                 {/* Data Science for Sustainable Development logo */}
                 <div className="text-center">
                   <img
-                    src="/logo_dssd.svg"
+                    src={`${import.meta.env.BASE_URL}logo_dssd.svg`}
                     alt="Data Science for Sustainable Development"
                     className="w-20 h-20 object-contain mb-2 mx-auto"
                     onClick={() => window.open('https://dssdglobal.org/', '_blank')}

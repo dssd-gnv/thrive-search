@@ -53,7 +53,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({ paper, colorMap }) => {
 
         {!isEmptyValue(paper.authors) && (
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            <span className="font-semibold">Authors:</span> {paper.authors}
+            By {paper.authors}
           </p>
         )}
 

@@ -46,7 +46,7 @@ export default function App() {
     const loadCSV = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('/thrive_review.csv');
+        const response = await fetch(`${import.meta.env.BASE_URL}thrive_review.csv`);
         if (!response.ok) throw new Error('Failed to load CSV file');
         const blob = await response.blob();
         const file = new File([blob], 'thrive_review.csv');
@@ -73,13 +73,13 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <img src="/logo_thrive.png" alt="THRIVE Logo" className="h-12 w-30 object-contain" />
+              <img src={`${import.meta.env.BASE_URL}logo_thrive.png`} alt="THRIVE Logo" className="h-12 w-30 object-contain" />
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   Literature Review
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 mt-1">
-                  Search and filter research papers by category
+                  Search and filter documents by category
                 </p>
               </div>
             </div>
