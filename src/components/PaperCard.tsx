@@ -38,6 +38,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({ paper, colorMap }) => {
   };
 
   const tabCount = Object.values(hasTabs).filter(Boolean).length;
+  const hasTabsBool = tabCount > 0;
 
   return (
     // Card container, clickable if it has a link
@@ -46,7 +47,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({ paper, colorMap }) => {
       className={`bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-shadow duration-200 hover:shadow-lg ${cursorClass}`}
     >
       {/* Card header */}
-      <div className="p-6 pb-4">
+      <div className={`p-6 ${hasTabsBool ? 'pb-4' : 'pb-0'}`}>
         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
           {paper.title}
         </h2>
@@ -135,7 +136,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({ paper, colorMap }) => {
       )}
 
       {/* Tab content */}
-      <div className="p-6">
+      <div className={`p-6 ${hasTabs ? '' : 'pt-0'}`}>
         {/* About tab content */}
         {activeTab === 'main' && !isEmptyValue(paper.mainIdea) && (
           <div>
