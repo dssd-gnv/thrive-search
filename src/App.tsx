@@ -4,7 +4,7 @@ import { SearchBar } from './components/SearchBar';
 import { CategoryFilter } from './components/CategoryFilter';
 import { DarkModeToggle } from './components/DarkModeToggle';
 import { InfoPopup } from './components/InfoPopup';
-import { parseCSV, getAllCategories, filterPapers } from './utils/csvParser';
+import { fetchGoogleSheets, getAllCategories, filterPapers } from './utils/csvParser';
 import { getCategoryColors } from './utils/categoryColors';
 import type { ResearchPaper, FilterState } from './types';
 import './index.css';
@@ -41,28 +41,34 @@ export default function App() {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
-  // Load and parse CSV file
+  // Load and parse Google Sheets data with live updates
   useEffect(() => {
-    const loadCSV = async () => {
+    const loadGoogleSheets = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`${import.meta.env.BASE_URL}thrive_review.csv`);
-        if (!response.ok) throw new Error('Failed to load CSV file');
-        const blob = await response.blob();
-        const file = new File([blob], 'thrive_review.csv');
-        const parsedPapers = await parseCSV(file);
+        const parsedPapers = await fetchGoogleSheets();
         setPapers(parsedPapers);
         const allCategories = getAllCategories(parsedPapers);
         setCategories(allCategories);
         setColorMap(getCategoryColors(allCategories));
+        setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred while loading the CSV');
+        setError(err instanceof Error ? err.message : 'An error occurred while loading the data');
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadCSV();
+    // Initial load
+    loadGoogleSheets();
+
+    // Set up polling for live updates every 30 seconds
+    const interval = setInterval(() => {
+      loadGoogleSheets();
+    }, 30000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const filteredPapers = filterPapers(papers, filters.searchQuery, filters.selectedCategories);

@@ -1,6 +1,9 @@
 import Papa from 'papaparse';
 import type { ResearchPaper } from '../types';
 
+// Google Sheets CSV export URL
+const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1TjkmhejcFU4GbuEUvL8Oyx5m3yqu3-_0w_kFp4yIBVI/export?format=csv';
+
 const isEmptyValue = (value: string | undefined): boolean => {
   if (!value) return true;
   const trimmed = value.trim();
@@ -48,12 +51,52 @@ export const parseCSV = async (file: File): Promise<ResearchPaper[]> => {
   });
 };
 
+export const fetchGoogleSheets = async (): Promise<ResearchPaper[]> => {
+  return new Promise((resolve, reject) => {
+    Papa.parse(GOOGLE_SHEETS_URL, {
+      header: true,
+      skipEmptyLines: true,
+      download: true,
+      complete: (results) => {
+        const papers: ResearchPaper[] = (results.data as any[])
+          .map((row: any) => ({
+            link: row.Link || '',
+            title: row.Title || '',
+            authors: row.Authors || '',
+            mainIdea: row.MainIdea || '',
+            problems: row.Problems || '',
+            solutions: row.Solutions || '',
+            thrive: parseThrive(row.THRIVE || ''),
+            implement: row.Implement || '',
+          }))
+          .filter((paper) => !isEmptyValue(paper.title));
+
+        resolve(papers);
+      },
+      error: (error) => {
+        reject(error);
+      },
+    });
+  });
+};
+
 export const getAllCategories = (papers: ResearchPaper[]): string[] => {
   const categories = new Set<string>();
   papers.forEach((paper) => {
     paper.thrive.forEach((cat: string) => categories.add(cat));
   });
-  return Array.from(categories).sort();
+  
+  // Sort all categories except "Closed-Loop Referral"
+  const sortedCategories = Array.from(categories)
+    .filter((cat) => cat !== 'Closed-Loop Referrals')
+    .sort();
+  
+  // Add "Closed-Loop Referral" at the end if it exists
+  if (categories.has('Closed-Loop Referrals')) {
+    sortedCategories.push('Closed-Loop Referrals');
+  }
+  
+  return sortedCategories;
 };
 
 export const filterPapers = (
